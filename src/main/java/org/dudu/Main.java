@@ -2,6 +2,7 @@ package org.dudu;
 
 import com.hazelcast.core.HazelcastInstance;
 import org.dudu.core.*;
+import org.dudu.persistence.DuduDataLoader;
 import org.dudu.persistence.DuduPersistenceManager;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -13,6 +14,12 @@ public class Main {
         System.out.println("=== ∂u∂u Distributed Framework TRUE MULTI-NODE Demo ===");
         
         try {
+            // 0. Parse Arguments
+            String filePath = "data/records.csv";
+            String targetKey = "name";
+            if (args.length >= 1) filePath = args[0];
+            if (args.length >= 2) targetKey = args[1];
+
             // 1. Setup Persistence Manager (MongoDB & MySQL)
             String mongoHost = System.getenv("DUDU_MONGO_HOST") != null ? System.getenv("DUDU_MONGO_HOST") : "127.0.0.1";
             int mongoPort = System.getenv("DUDU_MONGO_PORT") != null ? Integer.parseInt(System.getenv("DUDU_MONGO_PORT")) : 27017;
@@ -29,13 +36,21 @@ public class Main {
 
             // 2. Setup Configuration
             DuduPolicy policy = new DuduPolicy();
-            policy.setBlockingKeySet(new HashSet<>(Arrays.asList("name")));
+            policy.setBlockingKeySet(new HashSet<>(Arrays.asList(targetKey)));
             policy.setDelta(0.75);
             policy.setStrategy(DuduPolicy.JoinStrategy.PPJOIN); // Default
 
-            // 3. Seed Data into Persistence Layer (MongoDB)
-            persistenceManager.saveRecord("name", new DataRecord("1", "name", "John Smith New York"));
-            persistenceManager.saveRecord("name", new DataRecord("2", "name", "John Smith NY"));
+            // 3. Ingest Data from File
+            System.out.println("[LOADER] Loading data from: " + filePath + " (Selective Key: " + targetKey + ")");
+            List<DataRecord> records = DuduDataLoader.loadFromCsv(filePath);
+            int count = 0;
+            for (DataRecord record : records) {
+                if (record.getBlockingKey().equals(targetKey)) {
+                    persistenceManager.saveRecord(targetKey, record);
+                    count++;
+                }
+            }
+            System.out.println("[LOADER] Successfully ingested " + count + " records into MongoDB.");
 
             // 4. Initialize Framework (Isolated clusters)
             List<String> nodes = Arrays.asList("127.0.0.1:5701");

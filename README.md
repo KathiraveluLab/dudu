@@ -19,9 +19,18 @@ chmod +x setup.sh
 The script will automatically decide whether to start Docker containers or use your host-level database instances.
 
 ### 2. Run
+By default, the framework runs on the sample `name` dataset.
 ```bash
 mvn exec:java -Dexec.mainClass="org.dudu.Main"
 ```
+
+To run against a specific file and blocking key:
+```bash
+mvn exec:java -Dexec.mainClass="org.dudu.Main" -Dexec.args="data/records.csv product"
+```
+
+## Sample Data
+A sample dataset is provided in `data/records.csv`. It contains records for both `name` and `product` blocking keys to demonstrate multi-tenanted detection.
 
 ### Configuration
 The application and the startup script use environment variables for database configuration. If not set, they default to standard ports:
