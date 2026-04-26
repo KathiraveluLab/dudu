@@ -14,7 +14,11 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+<<<<<<< HEAD
     <hazelcast.version>3.12.13</hazelcast.version>
+=======
+    <hazelcast.version>5.6.0</hazelcast.version>
+>>>>>>> f100dd817d409d9976efe2b7e8b491456d8d826d
   </properties>
 
   <dependencies>
@@ -28,33 +32,45 @@
     <dependency>
       <groupId>org.mongodb</groupId>
       <artifactId>mongo-java-driver</artifactId>
+<<<<<<< HEAD
       <version>3.12.11</version>
+=======
+      <version>3.12.14</version>
+>>>>>>> f100dd817d409d9976efe2b7e8b491456d8d826d
     </dependency>
 
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
+<<<<<<< HEAD
       <version>8.0.28</version>
+=======
+      <version>8.0.30</version>
+>>>>>>> f100dd817d409d9976efe2b7e8b491456d8d826d
     </dependency>
 
     <dependency>
       <groupId>org.jongo</groupId>
       <artifactId>jongo</artifactId>
+<<<<<<< HEAD
       <version>1.5.0</version>
+=======
+      <version>1.5.2</version>
+>>>>>>> f100dd817d409d9976efe2b7e8b491456d8d826d
     </dependency>
 
     <!-- Hadoop Client for target storage -->
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-client</artifactId>
-      <version>2.7.0</version>
+      <version>3.5.0</version>
     </dependency>
 
     <!-- Testing -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -64,7 +80,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.3</version>
+        <version>3.15.0</version>
         <configuration>
           <source>1.8</source>
           <target>1.8</target>
