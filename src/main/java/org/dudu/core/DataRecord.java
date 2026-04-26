@@ -8,9 +8,15 @@ import java.util.Set;
  * Represents a data record for duplicate detection.
  */
 public class DataRecord implements Serializable {
-    private final String id;
-    private final String blockingKey;
-    private final Set<String> tokens;
+    private String id;
+    private String blockingKey;
+    private Set<String> tokens;
+
+    /**
+     * Default constructor for Jackson/Jongo deserialization.
+     */
+    public DataRecord() {
+    }
 
     public DataRecord(String id, String blockingKey, String content) {
         this.id = id;

@@ -14,9 +14,17 @@ public class Main {
         
         try {
             // 1. Setup Persistence Manager (MongoDB & MySQL)
+            String mongoHost = System.getenv("DUDU_MONGO_HOST") != null ? System.getenv("DUDU_MONGO_HOST") : "127.0.0.1";
+            int mongoPort = System.getenv("DUDU_MONGO_PORT") != null ? Integer.parseInt(System.getenv("DUDU_MONGO_PORT")) : 27017;
+            
+            int mysqlPort = System.getenv("DUDU_MYSQL_PORT") != null ? Integer.parseInt(System.getenv("DUDU_MYSQL_PORT")) : 3306;
+            String mysqlUrl = System.getenv("DUDU_MYSQL_URL") != null ? System.getenv("DUDU_MYSQL_URL") : "jdbc:mysql://localhost:" + mysqlPort + "/dudu_archive?useSSL=false&allowPublicKeyRetrieval=true";
+            String mysqlUser = System.getenv("DUDU_MYSQL_USER") != null ? System.getenv("DUDU_MYSQL_USER") : "root";
+            String mysqlPass = System.getenv("DUDU_MYSQL_PASSWORD") != null ? System.getenv("DUDU_MYSQL_PASSWORD") : "password";
+
             DuduPersistenceManager persistenceManager = new DuduPersistenceManager(
-                "127.0.0.1", 27017, "dudu_db", 
-                "jdbc:mysql://localhost:3306/dudu_archive?useSSL=false", "root", "password"
+                mongoHost, mongoPort, "dudu_db", 
+                mysqlUrl, mysqlUser, mysqlPass
             );
 
             // 2. Setup Configuration

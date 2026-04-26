@@ -8,18 +8,27 @@ Distributed Near Duplicate Detection for Big Data
 
 ## Getting Started
 
-### 1. Start Infrastructure (Docker)
-To start the required MongoDB and MySQL databases:
+### 1. Start Infrastructure
+ We provide a dynamic setup script that handles infrastructure detection (Host vs. Docker) and builds the project.
+
 ```bash
-docker-compose up -d
+chmod +x setup.sh
+./setup.sh
 ```
 
-### 2. Build and Run
+The script will automatically decide whether to start Docker containers or use your host-level database instances.
+
+### 2. Run
 ```bash
-mvn clean install
 mvn exec:java -Dexec.mainClass="org.dudu.Main"
 ```
 
+### Configuration
+The application and the startup script use environment variables for database configuration. If not set, they default to standard ports:
+- `DUDU_MONGO_PORT`: Port for MongoDB (Default: 27017 or 27018 on conflict)
+- `DUDU_MYSQL_PORT`: Port for MySQL (Default: 3306 or 3307 on conflict)
+
+---
 
 ## Citing ∂u∂u
 
