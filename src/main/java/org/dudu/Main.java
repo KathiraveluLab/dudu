@@ -17,8 +17,10 @@ public class Main {
             // 0. Parse Arguments
             String filePath = "data/records.csv";
             String targetKey = "name";
+            double threshold = 0.5;
             if (args.length >= 1) filePath = args[0];
             if (args.length >= 2) targetKey = args[1];
+            if (args.length >= 3) threshold = Double.parseDouble(args[2]);
 
             // 1. Setup Persistence Manager (MongoDB & MySQL)
             String mongoHost = System.getenv("DUDU_MONGO_HOST") != null ? System.getenv("DUDU_MONGO_HOST") : "127.0.0.1";
@@ -37,11 +39,12 @@ public class Main {
             // 2. Setup Configuration
             DuduPolicy policy = new DuduPolicy();
             policy.setBlockingKeySet(new HashSet<>(Arrays.asList(targetKey)));
-            policy.setDelta(0.75);
+            policy.setDelta(threshold);
             policy.setStrategy(DuduPolicy.JoinStrategy.PPJOIN); // Default
 
             // 3. Ingest Data from File
             System.out.println("[LOADER] Loading data from: " + filePath + " (Selective Key: " + targetKey + ")");
+            persistenceManager.clearRecords(targetKey); // Clean start for the demo
             List<DataRecord> records = DuduDataLoader.loadFromCsv(filePath);
             int count = 0;
             for (DataRecord record : records) {
@@ -60,7 +63,7 @@ public class Main {
 
             // 5. Orchestrate Join (Executes DISTRIBUTEDly on Hazelcast Cluster)
             DuduCoordinator coordinator = new DuduCoordinator(tenantInstances, persistenceManager);
-            coordinator.duduJoin(policy);
+            coordinator.duduJoin(targetKey, policy);
 
             // 6. Shutdown
             for (HazelcastInstance instance : tenantInstances.values()) {

@@ -49,6 +49,11 @@ public class DuduPersistenceManager {
         collection.save(record);
     }
 
+    public void clearRecords(String blockingKey) {
+        MongoCollection collection = jongo.getCollection("dudu_records_" + blockingKey);
+        collection.remove();
+    }
+
     public List<DataRecord> loadRecords(String blockingKey) {
         MongoCollection collection = jongo.getCollection("dudu_records_" + blockingKey);
         Iterable<DataRecord> iterable = collection.find().as(DataRecord.class);

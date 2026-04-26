@@ -24,13 +24,18 @@ By default, the framework runs on the sample `name` dataset.
 mvn exec:java -Dexec.mainClass="org.dudu.Main"
 ```
 
-To run against a specific file and blocking key:
+To run against a specific file, blocking key, and similarity threshold (e.g., 0.5):
 ```bash
-mvn exec:java -Dexec.mainClass="org.dudu.Main" -Dexec.args="data/records.csv product"
+mvn exec:java -Dexec.mainClass="org.dudu.Main" -Dexec.args="data/records.csv product 0.5"
 ```
 
+## Viewing Results
+The framework provides results in two formats:
+1. **Console Output**: A summary and list of duplicate ID pairs are printed at the end of the execution.
+2. **Database Archive**: Detailed results are persisted in the `dudu_results` table of the `dudu_archive` MySQL database.
+
 ## Sample Data
-A sample dataset is provided in `data/records.csv`. It contains records for both `name` and `product` blocking keys to demonstrate multi-tenanted detection.
+A sample dataset is provided in `data/records.csv`.
 
 ### Configuration
 The application and the startup script use environment variables for database configuration. If not set, they default to standard ports:

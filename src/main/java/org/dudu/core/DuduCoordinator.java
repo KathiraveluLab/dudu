@@ -26,7 +26,7 @@ public class DuduCoordinator {
         this.localExecutor = Executors.newFixedThreadPool(Math.max(1, tenantInstances.size()));
     }
 
-    public void duduJoin(DuduPolicy policy) {
+    public void duduJoin(String targetKey, DuduPolicy policy) {
         System.out.println("Starting orchestrated TRUE DISTRIBUTED join with Strategy: " + policy.getStrategy());
 
         List<CompletableFuture<List<String[]>>> futures = tenantInstances.entrySet().stream()
@@ -61,11 +61,30 @@ public class DuduCoordinator {
                 .flatMap(f -> f.join().stream())
                 .collect(Collectors.toList())).join();
 
-        mergeAndReport(allDuplicatePairs);
+        // 6. Report with Content
+        reportWithContent(targetKey, allDuplicatePairs);
         localExecutor.shutdown();
     }
 
-    private void mergeAndReport(List<String[]> pairs) {
-        System.out.println("Final duplicate count across all isolated clusters: " + pairs.size());
+    private void reportWithContent(String blockingKey, List<String[]> pairs) {
+        System.out.println("--------------------------------------------------");
+        System.out.println("Final duplicate count across all clusters: " + pairs.size());
+        
+        if (!pairs.isEmpty()) {
+            List<DataRecord> records = persistenceManager.loadRecords(blockingKey);
+            Map<String, String> idToContent = records.stream()
+                    .collect(Collectors.toMap(DataRecord::getId, DataRecord::getContent, (a, b) -> a));
+
+            for (String[] pair : pairs) {
+                if (pair[0].equals(pair[1])) continue; // Filter out identical ID matches (from accidental repeated ingestions)
+                
+                System.out.println("[RESULT] Possible Match:");
+                System.out.println("   -> ID:" + pair[0] + " | " + idToContent.getOrDefault(pair[0], "N/A"));
+                System.out.println("   -> ID:" + pair[1] + " | " + idToContent.getOrDefault(pair[1], "N/A"));
+                System.out.println();
+            }
+        }
+        System.out.println("--------------------------------------------------");
+        System.out.println("[ARCHIVE] Results stored in MySQL table: dudu_results");
     }
 }

@@ -39,13 +39,17 @@ public class PPJoin implements Serializable {
                         candidateOverlap.put(j, candidateOverlap.getOrDefault(j, 0) + 1);
                     }
                 }
-                // Index current record's prefix
-                invertedIndex.computeIfAbsent(token, x -> new ArrayList<>()).add(i);
+            }
+            
+            // Index current record's prefix AFTER probing
+            for (int k = 0; k < p1; k++) {
+                invertedIndex.computeIfAbsent(tokens1.get(k), x -> new ArrayList<>()).add(i);
             }
 
             // Verify candidates
             for (Map.Entry<Integer, Integer> entry : candidateOverlap.entrySet()) {
                 int j = entry.getKey();
+                if (j == i) continue; // Safety guard: ignore self
                 int currentOverlap = entry.getValue();
                 DataRecord r2 = data.get(j);
                 
