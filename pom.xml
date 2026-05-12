@@ -14,7 +14,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <hazelcast.version>3.12.13</hazelcast.version>
+    <hazelcast.version>5.2.5</hazelcast.version>
   </properties>
 
   <dependencies>
@@ -54,7 +54,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
